@@ -1,5 +1,6 @@
 package com.xyinc.resource.dto;
 
+import com.xyinc.handler.PointOfInterestExceptionHandler;
 import com.xyinc.model.PointOfInterest;
 import com.xyinc.service.PointOfInterestService;
 

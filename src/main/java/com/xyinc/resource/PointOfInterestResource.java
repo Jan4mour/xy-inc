@@ -3,6 +3,7 @@ package com.xyinc.resource;
 import com.xyinc.core.GenericError;
 import com.xyinc.model.PointOfInterest;
 import com.xyinc.resource.dto.PointOfInterestDto;
+import com.xyinc.resource.dto.PointOfInterestRequest;
 import com.xyinc.service.PointOfInterestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Validated
 @RequestMapping("/point-of-interest")
 public class PointOfInterestResource {
 
@@ -38,7 +41,7 @@ public class PointOfInterestResource {
      */
     @PostMapping
     public ResponseEntity<PointOfInterest> registerPointOfInterest(@Valid @RequestBody PointOfInterestDto point, BindingResult brs) {
-        if (!brs.hasErrors()){
+        if (!brs.hasErrors()) {
             try {
                 LOGGER.info("Classe: {}, criando registro: {}", getClass().getName(), point);
                 PointOfInterest poi = new PointOfInterest(point);
@@ -79,15 +82,15 @@ public class PointOfInterestResource {
      */
     @RequestMapping(value = "/find-by-proximity", method = RequestMethod.GET)
     public ResponseEntity<List<PointOfInterest>> findByProximity(
-            @RequestParam(value = "x") Double coordinateX,
-            @RequestParam(value = "y") Double coordinateY,
-            @RequestParam(value = "distance") Double dMax) {
+            @PositiveOrZero(message = "Coordenada x deveria ser positiva") @RequestParam(value = "Coordenada x") Double coordinateX,
+            @PositiveOrZero(message = "Coordenada y deveria ser positiva") @RequestParam(value = "Coordenada y") Double coordinateY,
+            @PositiveOrZero(message = "Distancia maxima deveria ser maior ou igual a Zero") @RequestParam(value = "Distancia Max") Double dMax) {
 
-            List<PointOfInterest> returnPoints = pointOfInterestService.findByProximity(coordinateX, coordinateY, dMax);
-            if (returnPoints.isEmpty()) {
-                return new ResponseEntity(new GenericError("Não foi encontrado nenhum ponto de interesse na proximidade."), HttpStatus.NOT_FOUND);
-            }
-            return ResponseEntity.ok().body(returnPoints);
+        List<PointOfInterest> returnPoints = pointOfInterestService.findByProximity(coordinateX, coordinateY, dMax);
+        if (returnPoints.isEmpty()) {
+            return new ResponseEntity(new GenericError("Não foi encontrado nenhum ponto de interesse na proximidade."), HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok().body(returnPoints);
     }
 
     /**
