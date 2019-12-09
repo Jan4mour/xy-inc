@@ -45,8 +45,7 @@ public class PointOfInterestResource {
             try {
                 LOGGER.info("Classe: {}, criando registro: {}", getClass().getName(), point);
                 PointOfInterest poi = new PointOfInterest(point);
-                pointOfInterestService.registerPointOfInterest(poi);
-                return ResponseEntity.ok(poi);
+                return ResponseEntity.ok(pointOfInterestService.registerPointOfInterest(poi));
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registerPointOfInterest", e);
             }
@@ -63,13 +62,13 @@ public class PointOfInterestResource {
     public ResponseEntity retrieveAllPointOfInterest() {
 
         try {
-            Optional<List<PointOfInterest>> listaRetorno = pointOfInterestService.retrieveAllPointOfInterest();
+            Optional<List<PointOfInterest>> poiList = pointOfInterestService.retrieveAllPointOfInterest();
 
-            if (!listaRetorno.isPresent()) {
+            if (!poiList.isPresent()) {
                 LOGGER.info("Nenhum registro encontrado");
                 return new ResponseEntity(new GenericError("Nenhum registro encontrado"), HttpStatus.NO_CONTENT);
             }
-            return ResponseEntity.ok(listaRetorno);
+            return ResponseEntity.ok(poiList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "buscarTodos", e);
         }

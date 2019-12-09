@@ -22,8 +22,8 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
     private PointOfInterestRepository pointOfInterestRepository;
 
     @Override
-    public void registerPointOfInterest(PointOfInterest point) {
-        pointOfInterestRepository.save(point);
+    public PointOfInterest registerPointOfInterest(PointOfInterest point) {
+        return pointOfInterestRepository.save(point);
     }
 
     @Override

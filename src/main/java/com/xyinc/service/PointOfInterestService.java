@@ -9,7 +9,7 @@ import java.util.Optional;
 @Service
 public interface  PointOfInterestService {
 
-    void registerPointOfInterest(PointOfInterest point);
+    PointOfInterest registerPointOfInterest(PointOfInterest point);
 
     Optional<List<PointOfInterest>> retrieveAllPointOfInterest();
 
